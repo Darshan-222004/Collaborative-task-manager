@@ -24,7 +24,6 @@ export enum TaskStatus {
  * Interface defining Task document structure in TypeScript
  */
 export interface ITask extends Document {
-    _id: string;
     title: string;
     description: string;
     dueDate: Date;
@@ -34,6 +33,12 @@ export interface ITask extends Document {
     assignedToId: mongoose.Types.ObjectId | string;
     createdAt: Date;
     updatedAt: Date;
+    history: {
+        action: string;
+        changedBy: mongoose.Types.ObjectId | string;
+        details?: string;
+        timestamp: Date;
+    }[];
 }
 
 /**
@@ -90,6 +95,12 @@ const TaskSchema = new Schema<ITask>(
             ref: 'User',
             required: [true, 'Assigned user ID is required'],
         },
+        history: [{
+            action: { type: String, required: true }, // e.g., 'CREATED', 'UPDATED', 'STATUS_CHANGE'
+            changedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+            details: { type: String },
+            timestamp: { type: Date, default: Date.now }
+        }],
     },
     {
         timestamps: true,
@@ -126,7 +137,9 @@ TaskSchema.index({ status: 1, priority: 1 });
  */
 TaskSchema.set('toJSON', {
     transform: function (doc, ret) {
-        delete ret.__v;
+        if (ret.__v !== undefined) {
+            delete ret.__v;
+        }
         return ret;
     },
 });
