@@ -1,3 +1,8 @@
+/**
+ * Database Configuration - MongoDB connection setup and lifecycle management using Mongoose ODM
+ * Establishes database connection with proper error handling, logging, and event listeners for disconnect/error scenarios
+ */
+
 import mongoose from 'mongoose';
 import { env } from './env';
 import logger from '../utils/logger';

@@ -1,3 +1,8 @@
+/**
+ * TaskRepository - Data access layer handling all MongoDB operations for Task collection via Mongoose
+ * Provides CRUD methods, filtering, sorting, pagination, and population of related user references (creator/assignee)
+ */
+
 import { Task, ITask, TaskStatus, TaskPriority } from '../models/Task';
 import { CreateTaskInput, UpdateTaskInput, TaskQueryInput } from '../dtos/task.dto';
 import logger from '../utils/logger';

@@ -1,3 +1,8 @@
+/**
+ * Axios Configuration - Centralized HTTP client setup with base URL, interceptors, and authentication headers
+ * Auto-injects JWT tokens from localStorage into all API requests and handles 401 unauthorized responses
+ */
+
 import axios from 'axios';
 
 /**
@@ -27,3 +32,6 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+// Default export for convenience imports across API modules
+export default api;

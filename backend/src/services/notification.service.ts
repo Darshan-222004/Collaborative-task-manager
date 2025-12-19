@@ -1,3 +1,8 @@
+/**
+ * NotificationService - Business logic for creating and managing persistent in-app notifications
+ * Handles notification creation for task assignments/updates and provides methods for marking notifications as read
+ */
+
 import notificationRepository from '../repositories/notification.repository';
 import { NotificationType } from '../models/Notification';
 import logger from '../utils/logger';

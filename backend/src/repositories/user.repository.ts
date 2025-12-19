@@ -1,4 +1,9 @@
-import { User, IUser } from '../models/User';
+import User, { IUser } from '../models/User';
+/**
+ * UserRepository - Data access layer for User collection in MongoDB via Mongoose ODM
+ * Handles user creation, lookup by ID/email, and password validation for authentication flows
+ */
+
 import { UpdateProfileInput } from '../dtos/auth.dto';
 import logger from '../utils/logger';
 

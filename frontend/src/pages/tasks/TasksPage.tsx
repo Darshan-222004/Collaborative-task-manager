@@ -1,3 +1,8 @@
+/**
+ * TasksPage - Main task management view with filtering, sorting, and real-time updates
+ * Displays all tasks in a grid with filters for status/priority, search, and task creation modal integration
+ */
+
 import { useState } from 'react';
 import { Plus, Filter, SortAsc } from 'lucide-react';
 import { useTasks, useTaskMutations, useUsers, useTaskSocket } from '../../hooks/useTasks';

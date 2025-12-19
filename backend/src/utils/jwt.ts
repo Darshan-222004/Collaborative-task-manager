@@ -1,3 +1,8 @@
+/**
+ * JWT Utilities - Token generation, verification, and extraction helpers for secure authentication
+ * Provides functions to create signed tokens, verify existing tokens, and extract tokens from Authorization headers
+ */
+
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 

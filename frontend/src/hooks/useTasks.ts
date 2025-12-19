@@ -1,4 +1,9 @@
-﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+﻿/**
+ * useTasks Hook - React Query hooks for task data fetching, mutations, and real-time Socket.io synchronization
+ * Provides CRUD operations, caching, optimistic updates, and automatic cache invalidation on WebSocket events
+ */
+
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/axios';
 import { useEffect } from 'react';
 import { getSocket } from '../lib/socket';

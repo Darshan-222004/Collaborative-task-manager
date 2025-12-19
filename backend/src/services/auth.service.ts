@@ -1,5 +1,11 @@
 import { RegisterInput, LoginInput, UpdateProfileInput } from '../dtos/auth.dto';
+/**
+ * AuthService - Handles user authentication, registration, and session management with JWT tokens
+ * Provides secure login/register flows with bcrypt password hashing and token generation for protected routes
+ */
+
 import userRepository from '../repositories/user.repository';
+import { hash, compare } from 'bcrypt';
 import { generateToken } from '../utils/jwt';
 import { AppError } from '../middlewares/error.middleware';
 import logger from '../utils/logger';

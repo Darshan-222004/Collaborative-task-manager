@@ -1,3 +1,8 @@
+/**
+ * TaskModal - Dialog component for creating and editing tasks with form validation
+ * Handles task CRUD with React Hook Form, Zod validation, user selection, and date/priority/status controls
+ */
+
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

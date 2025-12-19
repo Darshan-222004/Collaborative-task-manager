@@ -1,3 +1,8 @@
+/**
+ * authStore - Zustand store managing authentication state, user data, and login/logout actions
+ * Provides global access to authentication status, token management, and user profile information across the app
+ */
+
 import { create } from 'zustand';
 
 interface User {

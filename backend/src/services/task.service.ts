@@ -1,3 +1,8 @@
+/**
+ * TaskService - Core business logic layer for all task-related operations and workflows
+ * Orchestrates task creation, updates, validation, assignment logic, and notification triggers between repositories
+ */
+
 import { CreateTaskInput, UpdateTaskInput, TaskQueryInput } from '../dtos/task.dto';
 import taskRepository from '../repositories/task.repository';
 import userRepository from '../repositories/user.repository';

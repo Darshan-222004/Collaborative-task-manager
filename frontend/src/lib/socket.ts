@@ -1,3 +1,8 @@
+/**
+ * Socket.io Client - WebSocket connection manager for real-time task updates and notifications
+ * Establishes authenticated Socket.io connection with JWT token and provides singleton instance for event listeners
+ */
+
 import { io, Socket } from 'socket.io-client';
 
 /**

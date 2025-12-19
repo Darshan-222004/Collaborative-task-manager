@@ -1,3 +1,8 @@
+/**
+ * TaskSocket - WebSocket event handlers for real-time task updates across clients
+ * Manages Socket.io events for task creation, updates, deletion, and targeted assignment notifications
+ */
+
 import { Server } from 'socket.io';
 import { AuthenticatedSocket, socketAuthMiddleware, userSocketMap, emitToUser } from '../config/socket';
 import logger from '../utils/logger';

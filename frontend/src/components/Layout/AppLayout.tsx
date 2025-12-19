@@ -1,3 +1,8 @@
+/**
+ * AppLayout - Main authenticated layout wrapper with responsive sidebar navigation and notification bell
+ * Provides consistent navigation structure, user profile display, and mobile-responsive menu across all protected routes
+ */
+
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
