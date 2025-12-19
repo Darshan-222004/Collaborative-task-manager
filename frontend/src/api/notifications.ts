@@ -3,7 +3,7 @@
  * Provides methods to fetch notifications, mark as read/unread, get unread counts, and manage notification state
  */
 
-import api from '../lib/axios';
+import { api } from '../lib/axios';
 
 /**
  * Notification API Service
