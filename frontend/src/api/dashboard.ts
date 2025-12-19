@@ -1,3 +1,8 @@
+/**
+ * Dashboard API Service - HTTP client functions for fetching dashboard statistics and task lists
+ * Provides methods to retrieve aggregated stats, assigned tasks, created tasks, and overdue tasks for current user
+ */
+
 import api from '../lib/axios';
 
 /**

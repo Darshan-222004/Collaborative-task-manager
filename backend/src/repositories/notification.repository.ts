@@ -1,4 +1,9 @@
-import { Notification, INotification, NotificationType } from '../models/Notification';
+/**
+ * NotificationRepository - Data access layer for Notification collection in MongoDB
+ * Handles CRUD operations for notifications including filtering by read status and counting unread items
+ */
+
+import Notification, { INotification, NotificationType } from '../models/Notification';
 import logger from '../utils/logger';
 
 /**

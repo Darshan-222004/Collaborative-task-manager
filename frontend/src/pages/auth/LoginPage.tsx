@@ -1,3 +1,8 @@
+/**
+ * LoginPage - User authentication page with form validation and error handling
+ * Provides login form with email/password inputs, JWT token storage, and navigation to dashboard on success
+ */
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';

@@ -1,3 +1,8 @@
+/**
+ * useNotifications Hook - React Query hooks for notification fetching and mutations with auto-refetch
+ * Manages notification list, unread count, mark as read actions, and automatic polling for new notifications
+ */
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { notificationApi, Notification } from '../api/notifications';
 import toast from 'react-hot-toast';

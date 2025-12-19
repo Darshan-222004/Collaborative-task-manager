@@ -1,3 +1,8 @@
+/**
+ * Main API Router - Central routing configuration consolidating all API endpoint modules
+ * Mounts authentication, task management, dashboard, and notification routes under /api/v1prefix
+ */
+
 import { Router } from 'express';
 import authRoutes from './auth.routes';
 import taskRoutes from './task.routes';

@@ -1,3 +1,8 @@
+/**
+ * useDashboard Hook - React Query hooks for fetching dashboard statistics and user-specific task lists
+ * Provides hooks for dashboard stats, assigned tasks, created tasks, and overdue tasks with automatic caching
+ */
+
 import { useQuery } from '@tanstack/react-query';
 import { dashboardApi } from '../api/dashboard';
 

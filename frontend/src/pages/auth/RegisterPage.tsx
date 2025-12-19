@@ -1,3 +1,8 @@
+/**
+ * RegisterPage - User registration page with form validation for new account creation
+ * Handles user signup with name, email, password inputs and automatic login + navigation after successful registration
+ */
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
