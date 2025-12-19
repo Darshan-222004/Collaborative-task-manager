@@ -3,7 +3,7 @@
  * Provides methods to retrieve aggregated stats, assigned tasks, created tasks, and overdue tasks for current user
  */
 
-import api from '../lib/axios';
+import { api } from '../lib/axios';
 
 /**
  * Dashboard API Service

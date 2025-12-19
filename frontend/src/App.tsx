@@ -49,10 +49,6 @@ function App() {
             <ProtectedRoute>
               <AppLayout>
                 <Routes>
-
-
-                  // ... (in Routes)
-
                   <Route index element={<DashboardPage />} />
                   <Route path="tasks" element={<TasksPage />} />
                 </Routes>
