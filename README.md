@@ -265,86 +265,22 @@ frontend/
 - **Server State**: React Query (caching, auto-refetch)
 - **Client State**: Zustand (authentication, UI state)
 
-## Design Decisions
+## Design Decisions and Trade-offs
 
-### Why MongoDB?
+**Why MongoDB?**
+I chose MongoDB primarily because I am much more familiar and comfortable with it compared to relational databases like PostgreSQL. I have spent more time debugging and building with MongoDB, so I can move significantly faster. With PostgreSQL, I would have to worry about complex SQL syntax, migrations, and potential SQL injection vulnerabilities that I might miss. MongoDB's usage of JSON-like documents feels much more natural to work with in a JavaScript/TypeScript environment, allowing me to focus on building features rather than wrestling with database schemas.
 
-I chose MongoDB for this project because:
-- **Flexible schema**: Task requirements can evolve without migrations
-- **JSON-native**: Natural fit for JavaScript/TypeScript stack
-- **Familiarity**: I have more experience debugging MongoDB issues
-- **No SQL injection concerns**: Mongoose handles query sanitization
+**Backend Architecture**
+I implemented the Controller-Service-Repository pattern to keep the codebase organized and maintainable. The Controllers handle the incoming HTTP requests and responses, ensuring the input is valid before passing it on. The Services contain the actual business logic of the application. The Repositories are strictly responsible for direct database interactions. This separation means if I ever needed to swap out the database or change business rules, I would only have to touch specific layers rather than rewriting the entire backend.
 
-### JWT Authentication
+**Authentication**
+I used JWT (JSON Web Tokens) for authentication because it is stateless, meaning the server doesn't need to keep track of sessions in memory or a database. The token is generated upon login and sent with every subsequent request, which the backend then verifies. For this project, I am storing the token in localStorage. While httpOnly cookies are generally more secure, storing it in localStorage was a simpler approach that worked well for this specific implementation.
 
-JWT was chosen for authentication because:
-- **Stateless**: Backend doesn't need to store sessions
-- **Scalable**: Works well with distributed systems
-- **Simple**: Token-based auth is straightforward to implement
+**Real-time Functionality**
+I integrated Socket.io to handle real-time updates. When a user performs an action like creating or assigning a task, the backend saves it to the database and then immediately emits an event. The frontend listens for these events and automatically updates the UI without the user needing to refresh. I chose Socket.io over plain WebSockets because it automatically handles fallbacks (like long-polling) if a connection cannot be established, making it much more reliable.
 
-Tokens are stored in localStorage (for this demo). In production, httpOnly cookies would be more secure.
-
-### Socket.io for Real-Time
-
-Socket.io was selected over plain WebSockets because:
-- **Automatic fallbacks**: Falls back to long-polling if WebSockets fail
-- **Room support**: Easy to broadcast to specific users
-- **Reconnection handling**: Built-in reconnection logic
-
-### React Query
-
-React Query handles all server state because:
-- **Automatic caching**: Reduces unnecessary API calls
-- **Background refetching**: Keeps data fresh
-- **Optimistic updates**: Better UX for mutations
-
-## Socket.io Integration
-
-### How Real-Time Works
-
-1. Client connects to Socket.io server on page load
-2. JWT token sent during connection handshake
-3. User joins a room based on their user ID
-4. Server emits events to relevant users
-
-### Socket Events
-
-**Server → Client:**
-- `task:created` - New task created
-- `task:updated` - Task modified
-- `task:deleted` - Task removed
-- `task:assigned` - Task assigned to user
-
-**Example Flow:**
-```
-1. User A creates task, assigns to User B
-2. Backend saves task to MongoDB
-3. Backend creates notification
-4. Backend emits Socket.io event to User B's room
-5. User B's browser receives event
-6. React Query cache invalidated
-7. UI updates automatically
-```
-
-## Trade-offs & Assumptions
-
-### Trade-offs
-
-**MongoDB vs PostgreSQL:**
-I chose MongoDB because I'm more comfortable with it and have debugged it more. PostgreSQL would provide stronger ACID guarantees, but MongoDB's flexibility and my familiarity with it made development faster.
-
-**JWT in localStorage:**
-Not the most secure approach (httpOnly cookies would be better), but simpler for a demo. The token is sent with every request and verified by the backend.
-
-**Socket.io vs WebSockets:**
-Socket.io provides automatic fallbacks and reconnection handling, making it more reliable across different network conditions compared to plain WebSockets.
-
-### Assumptions
-
-- MongoDB is running locally or accessible via MongoDB Atlas
-- JWT tokens in localStorage are acceptable for a demo/learning project
-- Single MongoDB instance (production would use replica sets)
-- Users have basic knowledge of terminal commands
+## Assumptions
+I have assumed that MongoDB is running locally or that a valid MongoDB Atlas URI is provided. I also assumed that tasks currently belong to individual users and we haven't implemented shared team workspaces yet. Finally, I assumed that the user has basic knowledge of terminal commands to run the project.
 
 ## Testing
 
