@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import { useLogin } from '../../hooks/useAuth';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { Loader2 } from 'lucide-react';
+
 
 const loginSchema = z.object({
     email: z.string().email('Invalid email address'),
