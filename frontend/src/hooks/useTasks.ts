@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../lib/axios';
 import { useEffect } from 'react';
 import { getSocket } from '../lib/socket';
@@ -34,7 +34,15 @@ export const useTasks = (filters?: any) => {
     return useQuery({
         queryKey: ['tasks', filters],
         queryFn: async () => {
-            const params = new URLSearchParams(filters);
+            // Filter out undefined, null, and empty string values
+            const cleanFilters = Object.entries(filters || {}).reduce((acc, [key, value]) => {
+                if (value !== undefined && value !== null && value !== '') {
+                    acc[key] = value;
+                }
+                return acc;
+            }, {} as Record<string, any>);
+
+            const params = new URLSearchParams(cleanFilters);
             const response = await api.get<{ data: Task[] }>(`/tasks?${params.toString()}`);
             return response.data.data;
         },

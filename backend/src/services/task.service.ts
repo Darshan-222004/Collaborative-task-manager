@@ -3,6 +3,7 @@ import taskRepository from '../repositories/task.repository';
 import userRepository from '../repositories/user.repository';
 import { AppError } from '../middlewares/error.middleware';
 import logger from '../utils/logger';
+import notificationService from './notification.service';
 
 /**
  * Task Service - Business logic for task operations
@@ -25,6 +26,15 @@ export class TaskService {
         });
 
         logger.info(`Task created by ${creatorId}, assigned to ${data.assignedToId}`);
+
+        // Create notification for assigned user (if not assigning to self)
+        if (data.assignedToId !== creatorId) {
+            await notificationService.createTaskAssignmentNotification(
+                data.assignedToId,
+                task._id.toString(),
+                data.title
+            );
+        }
 
         return task.toJSON();
     }
@@ -105,11 +115,13 @@ export class TaskService {
     /**
      * Gets tasks assigned to a user
      */
-    async getAssignedTasks(userId: string): Promise<any[]> {
+    async getTasksAssignedToUser(userId: string): Promise<any[]> {
         const result = await taskRepository.findAll({
             assignedToId: userId,
             sortBy: 'dueDate',
             sortOrder: 'asc',
+            page: 1,
+            limit: 100,
         });
 
         return result.tasks.map((task) => task.toJSON());
@@ -118,11 +130,13 @@ export class TaskService {
     /**
      * Gets tasks created by a user
      */
-    async getCreatedTasks(userId: string): Promise<any[]> {
+    async getTasksCreatedByUser(userId: string): Promise<any[]> {
         const result = await taskRepository.findAll({
             creatorId: userId,
             sortBy: 'createdAt',
             sortOrder: 'desc',
+            page: 1,
+            limit: 100,
         });
 
         return result.tasks.map((task) => task.toJSON());
@@ -134,6 +148,35 @@ export class TaskService {
     async getOverdueTasks(userId: string): Promise<any[]> {
         const tasks = await taskRepository.findOverdueTasks(userId);
         return tasks.map((task) => task.toJSON());
+    }
+
+    /**
+     * Gets dashboard statistics for a user
+     */
+    async getDashboardStats(userId: string): Promise<any> {
+        const [assignedTasks, createdTasks, overdueTasks] = await Promise.all([
+            this.getTasksAssignedToUser(userId),
+            this.getTasksCreatedByUser(userId),
+            this.getOverdueTasks(userId),
+        ]);
+
+        // Calculate statistics
+        const total = assignedTasks.length + createdTasks.length;
+        const completed = [...assignedTasks, ...createdTasks].filter(
+            task => task.status === 'Completed'
+        ).length;
+        const pending = [...assignedTasks, ...createdTasks].filter(
+            task => task.status !== 'Completed'
+        ).length;
+
+        return {
+            total,
+            completed,
+            pending,
+            overdue: overdueTasks.length,
+            assignedToMe: assignedTasks.length,
+            createdByMe: createdTasks.length,
+        };
     }
 }
 

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from '../ui/Button';
+import NotificationDropdown from '../Notification/NotificationDropdown';
 
 interface AppLayoutProps {
     children: React.ReactNode;
@@ -123,7 +124,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
                         <div className="flex flex-1 items-center">
                             <h1 className="text-lg font-semibold text-gray-900">Task Manager</h1>
                         </div>
+                        <div className="flex items-center">
+                            <NotificationDropdown />
+                        </div>
                     </div>
+                </div>
+
+                {/* Desktop Header (hidden on mobile, shown on desktop) */}
+                <div className="hidden lg:flex sticky top-0 z-10 h-16 flex-shrink-0 bg-white shadow border-b border-gray-200 items-center justify-end px-8">
+                    <NotificationDropdown />
                 </div>
 
                 {/* Page Content */}

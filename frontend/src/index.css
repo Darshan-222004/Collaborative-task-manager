@@ -1,3 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20 text-gray-900 font-sans;
+        min-height: 100vh;
+    }
+}
+
+@layer components {
+
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        @apply bg-gray-100 rounded-full;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        @apply bg-gray-300 rounded-full hover:bg-gray-400;
+    }
+
+    /* Glass morphism effect */
+    .glass {
+        @apply bg-white/80 backdrop-blur-lg border border-white/20 shadow-xl;
+    }
+
+    /* Gradient text */
+    .gradient-text {
+        @apply bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent;
+    }
+
+    /* Card hover effect */
+    .card-hover {
+        @apply transition-all duration-300 hover:shadow-2xl hover:-translate-y-1;
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}

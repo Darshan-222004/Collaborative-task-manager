@@ -82,7 +82,11 @@ export default function TaskModal({
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+                <form onSubmit={handleSubmit((data) => {
+                    // Convert datetime-local string to ISO string for backend
+                    const isoDate = new Date(data.dueDate).toISOString();
+                    onSubmit({ ...data, dueDate: isoDate });
+                })} className="p-6 space-y-4">
                     <Input
                         label="Title"
                         placeholder="Task title"

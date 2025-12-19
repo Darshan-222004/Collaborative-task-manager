@@ -82,36 +82,70 @@ export const UpdateTaskDTO = z.object({
  * Schema for filtering/querying tasks
  */
 export const TaskQueryDTO = z.object({
-    status: z.nativeEnum(TaskStatus).optional(),
-    priority: z.nativeEnum(TaskPriority).optional(),
+    status: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (!val || val === '') return undefined;
+            return val;
+        })
+        .pipe(z.nativeEnum(TaskStatus).optional()),
+    priority: z
+        .string()
+        .optional()
+        .transform((val) => {
+            if (!val || val === '') return undefined;
+            return val;
+        })
+        .pipe(z.nativeEnum(TaskPriority).optional()),
     assignedToId: z
         .string()
-        .regex(/^[0-9a-fA-F]{24}$/, 'Invalid user ID format')
-        .optional(),
+        .optional()
+        .transform((val) => {
+            if (!val || val === '') return undefined;
+            return val;
+        })
+        .pipe(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid user ID format').optional()),
     creatorId: z
         .string()
-        .regex(/^[0-9a-fA-F]{24}$/, 'Invalid user ID format')
-        .optional(),
+        .optional()
+        .transform((val) => {
+            if (!val || val === '') return undefined;
+            return val;
+        })
+        .pipe(z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid user ID format').optional()),
     sortBy: z
-        .enum(['dueDate', 'createdAt', 'priority', 'status'])
-        .default('createdAt')
-        .optional(),
+        .string()
+        .optional()
+        .transform((val) => {
+            if (!val || val === '') return 'createdAt';
+            return val;
+        })
+        .pipe(z.enum(['dueDate', 'createdAt', 'priority', 'status'])),
     sortOrder: z
-        .enum(['asc', 'desc'])
-        .default('desc')
-        .optional(),
+        .string()
+        .optional()
+        .transform((val) => {
+            if (!val || val === '') return 'desc';
+            return val;
+        })
+        .pipe(z.enum(['asc', 'desc'])),
     page: z
         .string()
-        .regex(/^\d+$/, 'Page must be a number')
-        .transform(Number)
-        .default('1')
-        .optional(),
+        .optional()
+        .transform((val) => {
+            if (!val || val === '') return 1;
+            return Number(val);
+        })
+        .pipe(z.number().int().positive()),
     limit: z
         .string()
-        .regex(/^\d+$/, 'Limit must be a number')
-        .transform(Number)
-        .default('10')
-        .optional(),
+        .optional()
+        .transform((val) => {
+            if (!val || val === '') return 10;
+            return Number(val);
+        })
+        .pipe(z.number().int().positive().max(100)),
 });
 
 /**
