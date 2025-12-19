@@ -19,8 +19,9 @@ let socket: Socket | null = null;
 export const getSocket = (): Socket => {
   if (!socket) {
     const token = localStorage.getItem('token');
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
 
-    socket = io('http://localhost:5000', {
+    socket = io(socketUrl, {
       auth: {
         token,
       },

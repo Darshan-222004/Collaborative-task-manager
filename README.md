@@ -1,204 +1,413 @@
 # Collaborative Task Manager
 
-A task management app where teams can create, assign, and track tasks together. Built it to learn full-stack development with real-time features.
+A full-stack task management application with real-time collaboration features, built using the MERN stack (MongoDB, Express, React, Node.js) with TypeScript and Socket.io.
 
-## What It Does
+## Features
 
-You can create tasks, assign them to people, and see updates happen live. There's a dashboard that shows your stats, notifications when you get assigned tasks, and filters to find what you need.
+- User authentication with JWT
+- Create, update, and delete tasks
+- Assign tasks to team members
+- Real-time updates using Socket.io
+- Dashboard with task statistics
+- Notification system for task assignments
+- Filter and search functionality
+- Responsive design
 
-## How to Run It
+## Tech Stack
 
-### What You Need
-- Node.js (v18+)
-- MongoDB running somewhere
-- That's it
+### Frontend
+- React 19 with TypeScript
+- Vite (build tool)
+- TailwindCSS (styling)
+- React Query (server state management)
+- Zustand (client state management)
+- Socket.io Client (real-time updates)
+- React Hook Form + Zod (form validation)
+- Axios (HTTP client)
 
-### Setup
+### Backend
+- Node.js with TypeScript
+- Express.js (web framework)
+- MongoDB with Mongoose (database)
+- Socket.io (WebSocket server)
+- JWT (authentication)
+- Bcrypt (password hashing)
+- Zod (schema validation)
 
-1. **Clone and install:**
+## Prerequisites
+
+- Node.js (v18 or higher)
+- MongoDB (local or MongoDB Atlas)
+- npm or yarn
+
+## Installation & Setup
+
+### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/Darshan-222004/Collaborative-task-manager.git
 cd Collaborative-task-manager
+```
 
-# Backend
+### 2. Backend Setup
+
+```bash
 cd backend
 npm install
+```
 
-# Frontend
+Create a `.env` file in the `backend` directory:
+
+```env
+PORT=5000
+NODE_ENV=development
+MONGODB_URI=mongodb://localhost:27017/collaborative-task-manager
+JWT_SECRET=your-super-secret-jwt-key-minimum-32-characters
+JWT_EXPIRES_IN=7d
+FRONTEND_URL=http://localhost:5173
+BCRYPT_SALT_ROUNDS=10
+```
+
+### 3. Frontend Setup
+
+```bash
 cd ../frontend
 npm install
 ```
 
-2. **Set up environment files:**
+Create a `.env` file in the `frontend` directory:
 
-Backend `.env`:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/collaborative-task-manager
-JWT_SECRET=put-any-random-string-here
-FRONTEND_URL=http://localhost:5173
-```
-
-Frontend `.env`:
 ```env
 VITE_API_URL=http://localhost:5000/api/v1
 VITE_SOCKET_URL=http://localhost:5000
 ```
 
-3. **Run it:**
+### 4. Run the Application
+
+**Start MongoDB** (if running locally):
 ```bash
-# Terminal 1 - Backend
+# Windows
+net start MongoDB
+
+# Mac/Linux
+sudo systemctl start mongod
+```
+
+**Start Backend** (Terminal 1):
+```bash
 cd backend
 npm run dev
+```
 
-# Terminal 2 - Frontend
+**Start Frontend** (Terminal 2):
+```bash
 cd frontend
 npm run dev
 ```
 
-Open http://localhost:5173 and you're good to go.
+The application will be available at:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
 
-## Tech Stack
+## API Documentation
 
-**Frontend:** React + TypeScript, TailwindCSS for styling, React Query for data fetching
+### Base URL
+```
+http://localhost:5000/api/v1
+```
 
-**Backend:** Node.js + Express, MongoDB with Mongoose
+### Authentication Endpoints
 
-**Real-time:** Socket.io for live updates
-
-## API Endpoints
-
-Base URL: `http://localhost:5000/api/v1`
-
-### Auth
+#### Register User
 ```http
 POST /auth/register
-{
-  "name": "Your Name",
-  "email": "you@example.com",
-  "password": "yourpassword"
-}
+Content-Type: application/json
 
-POST /auth/login
 {
-  "email": "you@example.com",
-  "password": "yourpassword"
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123"
 }
 ```
 
-### Tasks (needs auth token)
+#### Login
 ```http
-# Add token to headers: Authorization: Bearer <your-token>
+POST /auth/login
+Content-Type: application/json
 
-GET /tasks                    # Get all tasks
-POST /tasks                   # Create task
-PATCH /tasks/:id              # Update task
-DELETE /tasks/:id             # Delete task
-
-GET /dashboard/stats          # Get your stats
-GET /notifications            # Get notifications
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
 ```
 
-## How I Built It
+### Task Endpoints (Requires Authentication)
 
-### Backend Structure
+Add JWT token to headers:
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+#### Create Task
+```http
+POST /tasks
+Content-Type: application/json
+
+{
+  "title": "Build Login Page",
+  "description": "Create responsive login UI",
+  "priority": "High",
+  "status": "To Do",
+  "dueDate": "2025-12-31T23:59:59.000Z",
+  "assignedToId": "user-id-here"
+}
+```
+
+#### Get All Tasks
+```http
+GET /tasks?status=To Do&priority=High&page=1&limit=10
+```
+
+#### Update Task
+```http
+PATCH /tasks/:id
+Content-Type: application/json
+
+{
+  "status": "In Progress",
+  "priority": "Urgent"
+}
+```
+
+#### Delete Task
+```http
+DELETE /tasks/:id
+```
+
+### Dashboard Endpoints
+
+#### Get Dashboard Statistics
+```http
+GET /dashboard/stats
+```
+
+Returns:
+```json
+{
+  "success": true,
+  "data": {
+    "total": 50,
+    "completed": 20,
+    "pending": 30,
+    "overdue": 5,
+    "assignedToMe": 15,
+    "createdByMe": 35
+  }
+}
+```
+
+### Notification Endpoints
+
+#### Get Notifications
+```http
+GET /notifications?includeRead=false
+```
+
+#### Mark Notification as Read
+```http
+PATCH /notifications/:id/read
+```
+
+## Architecture Overview
+
+### Backend Architecture
+
+The backend follows a **layered architecture** pattern:
+
 ```
 backend/
-├── controllers/    # Handle requests
-├── services/       # Business logic
-├── repositories/   # Talk to database
-├── models/         # MongoDB schemas
-└── sockets/        # Real-time events
+├── controllers/     # Handle HTTP requests/responses
+├── services/        # Business logic layer
+├── repositories/    # Database operations
+├── models/          # Mongoose schemas
+├── middlewares/     # Auth, error handling
+├── routes/          # API route definitions
+├── sockets/         # Socket.io event handlers
+├── config/          # Database & environment config
+└── utils/           # Helper functions (JWT, logger)
 ```
 
-I used the controller-service-repository pattern because it keeps things organized. Controllers handle the HTTP stuff, services have the logic, and repositories deal with the database.
+**Design Pattern: Controller-Service-Repository**
 
-### Why MongoDB?
+1. **Controllers**: Handle HTTP requests, validate input, call services
+2. **Services**: Contain business logic, orchestrate repositories
+3. **Repositories**: Direct database operations using Mongoose
 
-Honestly, I'm just more comfortable with it. I've worked with it before, debugged it more, and know how to fix things when they break. Plus, I don't have to worry about SQL injection attacks that I might miss. MongoDB's simpler for me to reason about.
+### Frontend Architecture
 
-Could I have used PostgreSQL? Sure. But I'd spend more time fighting with SQL syntax and migrations instead of building features.
+```
+frontend/
+├── components/      # Reusable UI components
+│   ├── Layout/      # App layout with navigation
+│   ├── Task/        # Task-related components
+│   └── ui/          # Basic UI elements
+├── pages/           # Page-level components
+│   ├── auth/        # Login, Register
+│   ├── dashboard/   # Dashboard page
+│   └── tasks/       # Tasks page
+├── hooks/           # Custom React hooks
+├── store/           # Zustand state management
+├── lib/             # Axios & Socket.io setup
+└── api/             # API service functions
+```
 
-### JWT for Auth
-
-I went with JWT because it's stateless - the backend doesn't need to remember sessions. Token gets sent with each request, backend verifies it, done. Stored in localStorage for now (yeah, I know httpOnly cookies are more secure, but this works for a demo).
-
-### Real-Time Updates
-
-Socket.io handles the live updates. When someone creates or updates a task:
-1. Backend saves it to MongoDB
-2. Emits a Socket.io event
-3. Frontend receives event
-4. UI updates automatically
-
-It's pretty straightforward. Socket.io also has fallbacks if WebSockets don't work, which is nice.
-
-### Frontend State
-
-I used React Query for server data (tasks, notifications) because it handles caching and refetching automatically. Zustand for auth state because it's tiny and simple - just 3 lines to set up.
+**State Management:**
+- **Server State**: React Query (caching, auto-refetch)
+- **Client State**: Zustand (authentication, UI state)
 
 ## Design Decisions
 
-**Layered Architecture:** Keeps code organized. If I need to swap MongoDB for something else later, I only touch the repository layer.
+### Why MongoDB?
 
-**TypeScript Everywhere:** Catches bugs before runtime. The type safety between frontend and backend saved me hours of debugging.
+I chose MongoDB for this project because:
+- **Flexible schema**: Task requirements can evolve without migrations
+- **JSON-native**: Natural fit for JavaScript/TypeScript stack
+- **Familiarity**: I have more experience debugging MongoDB issues
+- **No SQL injection concerns**: Mongoose handles query sanitization
 
-**Zod Validation:** Validates data on both ends. Same schema for frontend forms and backend API.
+### JWT Authentication
 
-**Notifications in DB:** Could've done them in-memory, but I wanted them to persist. If you close the app and come back, your notifications are still there.
+JWT was chosen for authentication because:
+- **Stateless**: Backend doesn't need to store sessions
+- **Scalable**: Works well with distributed systems
+- **Simple**: Token-based auth is straightforward to implement
+
+Tokens are stored in localStorage (for this demo). In production, httpOnly cookies would be more secure.
+
+### Socket.io for Real-Time
+
+Socket.io was selected over plain WebSockets because:
+- **Automatic fallbacks**: Falls back to long-polling if WebSockets fail
+- **Room support**: Easy to broadcast to specific users
+- **Reconnection handling**: Built-in reconnection logic
+
+### React Query
+
+React Query handles all server state because:
+- **Automatic caching**: Reduces unnecessary API calls
+- **Background refetching**: Keeps data fresh
+- **Optimistic updates**: Better UX for mutations
+
+## Socket.io Integration
+
+### How Real-Time Works
+
+1. Client connects to Socket.io server on page load
+2. JWT token sent during connection handshake
+3. User joins a room based on their user ID
+4. Server emits events to relevant users
+
+### Socket Events
+
+**Server → Client:**
+- `task:created` - New task created
+- `task:updated` - Task modified
+- `task:deleted` - Task removed
+- `task:assigned` - Task assigned to user
+
+**Example Flow:**
+```
+1. User A creates task, assigns to User B
+2. Backend saves task to MongoDB
+3. Backend creates notification
+4. Backend emits Socket.io event to User B's room
+5. User B's browser receives event
+6. React Query cache invalidated
+7. UI updates automatically
+```
 
 ## Trade-offs & Assumptions
 
-**Trade-offs I made:**
+### Trade-offs
 
-- **MongoDB over PostgreSQL:** I'm more comfortable with MongoDB. I've debugged it more, know how it works, and don't have to worry about SQL injection vulnerabilities I might miss. Could've used Postgres, but I'd spend more time fighting with migrations than building features.
+**MongoDB vs PostgreSQL:**
+I chose MongoDB because I'm more comfortable with it and have debugged it more. PostgreSQL would provide stronger ACID guarantees, but MongoDB's flexibility and my familiarity with it made development faster.
 
-- **JWT in localStorage:** Not the most secure (httpOnly cookies would be better), but it's simpler for a demo. The token gets sent with every request, backend verifies it, done.
+**JWT in localStorage:**
+Not the most secure approach (httpOnly cookies would be better), but simpler for a demo. The token is sent with every request and verified by the backend.
 
-- **Socket.io for real-time:** Could've used plain WebSockets, but Socket.io has automatic fallbacks if WebSockets don't work. More reliable across different networks.
+**Socket.io vs WebSockets:**
+Socket.io provides automatic fallbacks and reconnection handling, making it more reliable across different network conditions compared to plain WebSockets.
 
-**Assumptions:**
+### Assumptions
 
-- You're running this locally or have MongoDB Atlas set up
-- JWT tokens in localStorage are fine for a demo/learning project
-- Single MongoDB instance is okay (production would need replica sets)
-- Users understand basic terminal commands to run npm
+- MongoDB is running locally or accessible via MongoDB Atlas
+- JWT tokens in localStorage are acceptable for a demo/learning project
+- Single MongoDB instance (production would use replica sets)
+- Users have basic knowledge of terminal commands
 
-## Running Tests
+## Testing
 
 ```bash
 cd backend
 npm test
 ```
 
-I wrote tests for task creation, validation, and error cases. Should add more but these cover the critical paths.
+Tests cover:
+- Task creation and validation
+- User authentication
+- Error handling
+- Business logic
 
 ## Deployment
 
-**Frontend (Vercel):**
-```bash
-cd frontend
-npm run build
-# Upload dist/ folder
+This application is production-ready and can be deployed to Railway.
+
+**Deployment Guide:** See [RAILWAY_DEPLOY.md](./RAILWAY_DEPLOY.md) for complete deployment instructions.
+
+**Production Features:**
+- Environment-based configuration
+- CORS properly configured
+- Health check endpoint (`/health`)
+- TypeScript compilation for production
+- Socket.io with authentication
+
+## Project Structure
+
 ```
-
-**Backend (Render/Railway):**
-- Push to GitHub
-- Connect repo
-- Set environment variables
-- Deploy
-
-**Database (MongoDB Atlas):**
-- Free tier works fine
-- Get connection string
-- Update MONGODB_URI
+collaborative-task-manager/
+├── backend/                 # Node.js + Express API
+│   ├── src/
+│   │   ├── controllers/    # HTTP request handlers
+│   │   ├── services/       # Business logic
+│   │   ├── repositories/   # Database layer
+│   │   ├── models/         # Mongoose schemas
+│   │   ├── sockets/        # Socket.io handlers
+│   │   └── config/         # Configuration
+│   ├── .env.example        # Environment template
+│   └── package.json
+│
+├── frontend/               # React + TypeScript
+│   ├── src/
+│   │   ├── components/    # UI components
+│   │   ├── pages/         # Pages
+│   │   ├── hooks/         # Custom hooks
+│   │   ├── lib/           # Axios & Socket.io
+│   │   └── store/         # State management
+│   ├── .env.example       # Environment template
+│   └── package.json
+│
+├── RAILWAY_DEPLOY.md      # Deployment guide
+└── README.md              # This file
+```
 
 ## Contact
 
-Darshan - darshannayak222004@gmail.com
+**Name:** N Darshan Bharadwaj  
+**Email:** darshanbharadwaj04@gmail.com  
+**Phone:** +91 8073388324  
+**GitHub:** [Darshan-222004](https://github.com/Darshan-222004)
 
-Built this to learn full-stack development and real-time features. Feel free to use it, break it, or improve it.
+## License
 
----
-
-**Note:** This is a learning project. It works, but it's not production-ready. Use it to learn, not to run your actual business (yet).
+MIT License
