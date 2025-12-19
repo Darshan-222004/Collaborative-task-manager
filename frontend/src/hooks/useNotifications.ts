@@ -4,7 +4,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { notificationApi, Notification } from '../api/notifications';
+import { notificationApi } from '../api/notifications';
 import toast from 'react-hot-toast';
 
 /**
