@@ -175,30 +175,13 @@ I wrote tests for task creation, validation, and error cases. Should add more bu
 
 ## Deployment
 
-**Frontend (Vercel):**
-```bash
-cd frontend
-npm run build
-# Upload dist/ folder
-```
+**Frontend Railway:
 
-**Backend (Render/Railway):**
-- Push to GitHub
-- Connect repo
-- Set environment variables
-- Deploy
 
-**Database (MongoDB Atlas):**
-- Free tier works fine
-- Get connection string
-- Update MONGODB_URI
+**Backend Railway:
 
 ## Contact
 
-Darshan - darshannayak222004@gmail.com
-
-Built this to learn full-stack development and real-time features. Feel free to use it, break it, or improve it.
-
----
-
-**Note:** This is a learning project. It works, but it's not production-ready. Use it to learn, not to run your actual business (yet).
+Email - darshanbharadwaj04@gmail.com
+Phone:8073388324
+ This is a learning project. It works, but it's not production-ready. Use it to learn, not to run your actual business (yet).
