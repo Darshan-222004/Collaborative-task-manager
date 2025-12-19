@@ -1,5 +1,5 @@
 /**
- * AppLayout - Main authenticated layout wrapper with responsive sidebar navigation and notification bell
+ * AppLayout - Main authenticated layout wrapper with top navigation bar
  * Provides consistent navigation structure, user profile display, and mobile-responsive menu across all protected routes
  */
 
@@ -10,12 +10,10 @@ import {
     LayoutDashboard,
     CheckSquare,
     LogOut,
-    Menu,
-    X,
-    User
+    User,
+    ChevronDown
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { Button } from '../ui/Button';
 import NotificationDropdown from '../Notification/NotificationDropdown';
 
 interface AppLayoutProps {
@@ -24,10 +22,10 @@ interface AppLayoutProps {
 
 /**
  * Main authenticated layout component.
- * Includes responsive sidebar navigation and header.
+ * Includes responsive top navigation bar.
  */
 export default function AppLayout({ children }: AppLayoutProps) {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const location = useLocation();
     const { user, logout } = useAuthStore();
 
@@ -38,33 +36,104 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Mobile sidebar overlay */}
-            {isSidebarOpen && (
-                <div
-                    className="fixed inset-0 z-40 bg-gray-900/50 lg:hidden"
-                    onClick={() => setIsSidebarOpen(false)}
-                />
-            )}
+            {/* Top Navigation Bar */}
+            <header className="sticky top-0 z-50 bg-white shadow-md border-b border-gray-200">
+                <div className="px-4 sm:px-6 lg:px-8">
+                    <div className="flex h-16 items-center justify-between">
+                        {/* Logo/Brand */}
+                        <div className="flex items-center">
+                            <Link to="/" className="flex items-center">
+                                <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-700 flex items-center justify-center shadow-lg">
+                                    <span className="text-white font-bold text-lg">TM</span>
+                                </div>
+                                <h1 className="ml-3 text-xl font-bold text-gray-900 hidden sm:block">
+                                    Task Manager
+                                </h1>
+                            </Link>
+                        </div>
 
-            {/* Sidebar */}
-            <div className={cn(
-                "fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-0",
-                isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-            )}>
-                <div className="flex h-full flex-col">
-                    {/* Sidebar Header */}
-                    <div className="flex h-16 items-center border-b px-6">
-                        <h1 className="text-xl font-bold text-indigo-600">Task Manager</h1>
-                        <button
-                            className="ml-auto lg:hidden"
-                            onClick={() => setIsSidebarOpen(false)}
-                        >
-                            <X className="h-6 w-6 text-gray-500" />
-                        </button>
+                        {/* Center Navigation Links */}
+                        <nav className="hidden md:flex items-center space-x-1">
+                            {navigation.map((item) => {
+                                const isActive = location.pathname === item.href;
+                                return (
+                                    <Link
+                                        key={item.name}
+                                        to={item.href}
+                                        className={cn(
+                                            "flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200",
+                                            isActive
+                                                ? "bg-indigo-50 text-indigo-700 shadow-sm"
+                                                : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                                        )}
+                                    >
+                                        <item.icon className={cn(
+                                            "h-4 w-4",
+                                            isActive ? "text-indigo-600" : "text-gray-400"
+                                        )} />
+                                        <span>{item.name}</span>
+                                    </Link>
+                                );
+                            })}
+                        </nav>
+
+                        {/* Right Side - Notifications & User Menu */}
+                        <div className="flex items-center gap-3">
+                            {/* Notification Bell */}
+                            <NotificationDropdown />
+
+                            {/* User Profile Dropdown */}
+                            <div className="relative">
+                                <button
+                                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                                >
+                                    <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                        <User className="h-4 w-4" />
+                                    </div>
+                                    <div className="hidden sm:block text-left">
+                                        <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                                        <p className="text-xs text-gray-500 truncate max-w-[120px]">{user?.email}</p>
+                                    </div>
+                                    <ChevronDown className={cn(
+                                        "h-4 w-4 text-gray-400 transition-transform duration-200",
+                                        isUserMenuOpen && "rotate-180"
+                                    )} />
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                {isUserMenuOpen && (
+                                    <>
+                                        <div
+                                            className="fixed inset-0 z-10"
+                                            onClick={() => setIsUserMenuOpen(false)}
+                                        />
+                                        <div className="absolute right-0 mt-2 w-56 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-20">
+                                            <div className="p-3 border-b border-gray-100">
+                                                <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                                                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                                            </div>
+                                            <div className="p-2">
+                                                <button
+                                                    onClick={() => {
+                                                        logout();
+                                                        setIsUserMenuOpen(false);
+                                                    }}
+                                                    className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                                                >
+                                                    <LogOut className="h-4 w-4" />
+                                                    <span>Sign out</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Navigation Links */}
-                    <nav className="flex-1 space-y-1 px-3 py-4">
+                    {/* Mobile Navigation Links */}
+                    <nav className="md:hidden border-t border-gray-100 py-2 flex gap-2">
                         {navigation.map((item) => {
                             const isActive = location.pathname === item.href;
                             return (
@@ -72,81 +141,30 @@ export default function AppLayout({ children }: AppLayoutProps) {
                                     key={item.name}
                                     to={item.href}
                                     className={cn(
-                                        "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                                        "flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all flex-1 justify-center",
                                         isActive
                                             ? "bg-indigo-50 text-indigo-700"
-                                            : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                                            : "text-gray-700 hover:bg-gray-50"
                                     )}
                                 >
-                                    <item.icon
-                                        className={cn(
-                                            "mr-3 h-5 w-5 flex-shrink-0 transition-colors",
-                                            isActive ? "text-indigo-600" : "text-gray-400 group-hover:text-gray-500"
-                                        )}
-                                    />
-                                    {item.name}
+                                    <item.icon className={cn(
+                                        "h-4 w-4",
+                                        isActive ? "text-indigo-600" : "text-gray-400"
+                                    )} />
+                                    <span>{item.name}</span>
                                 </Link>
                             );
                         })}
                     </nav>
-
-                    {/* User Profile & Logout */}
-                    <div className="border-t p-4">
-                        <div className="flex items-center mb-4">
-                            <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                                <User className="h-5 w-5" />
-                            </div>
-                            <div className="ml-3">
-                                <p className="text-sm font-medium text-gray-700">{user?.name}</p>
-                                <p className="text-xs text-gray-500 truncate max-w-[140px]">{user?.email}</p>
-                            </div>
-                        </div>
-                        <Button
-                            variant="outline"
-                            className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
-                            onClick={logout}
-                        >
-                            <LogOut className="mr-2 h-4 w-4" />
-                            Sign out
-                        </Button>
-                    </div>
                 </div>
-            </div>
+            </header>
 
-            {/* Main Content Area */}
-            <div className="flex flex-1 flex-col lg:pl-64 transition-all duration-200">
-                {/* Mobile Header */}
-                <div className="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white shadow lg:hidden">
-                    <button
-                        type="button"
-                        className="px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 lg:hidden"
-                        onClick={() => setIsSidebarOpen(true)}
-                    >
-                        <span className="sr-only">Open sidebar</span>
-                        <Menu className="h-6 w-6" />
-                    </button>
-                    <div className="flex flex-1 justify-between px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-1 items-center">
-                            <h1 className="text-lg font-semibold text-gray-900">Task Manager</h1>
-                        </div>
-                        <div className="flex items-center">
-                            <NotificationDropdown />
-                        </div>
-                    </div>
+            {/* Page Content - Full Width */}
+            <main className="flex-1 py-8">
+                <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                    {children}
                 </div>
-
-                {/* Desktop Header (hidden on mobile, shown on desktop) */}
-                <div className="hidden lg:flex sticky top-0 z-10 h-16 flex-shrink-0 bg-white shadow border-b border-gray-200 items-center justify-end px-8">
-                    <NotificationDropdown />
-                </div>
-
-                {/* Page Content */}
-                <main className="flex-1 py-8">
-                    <div className="px-4 sm:px-6 lg:px-8">
-                        {children}
-                    </div>
-                </main>
-            </div>
+            </main>
         </div>
     );
 }
