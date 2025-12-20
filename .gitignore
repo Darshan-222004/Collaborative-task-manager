@@ -5,6 +5,7 @@ node_modules/
 # Build
 dist/
 !backend/dist/
+!frontend/dist/
 build/
 
 # Environment
