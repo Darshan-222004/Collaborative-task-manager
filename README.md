@@ -297,6 +297,8 @@ Tests cover:
 
 ## Deployment
 
+**Live Demo:** [https://collaborative-task-manager-production.up.railway.app](https://collaborative-task-manager-production.up.railway.app)
+
 This application is production-ready and can be deployed to Railway.
 
 **Deployment Guide:** See [RAILWAY_DEPLOY.md](./RAILWAY_DEPLOY.md) for complete deployment instructions.
