@@ -22,10 +22,10 @@ dotenv_1.default.config();
 const envSchema = zod_1.z.object({
     NODE_ENV: zod_1.z.enum(['development', 'production', 'test']).default('development'),
     PORT: zod_1.z.string().default('5000'),
-    MONGODB_URI: zod_1.z.string().min(1, 'MongoDB URI is required'),
-    JWT_SECRET: zod_1.z.string().min(32, 'JWT secret must be at least 32 characters'),
+    MONGODB_URI: zod_1.z.string().optional(),
+    JWT_SECRET: zod_1.z.string().default('fallback_secret_foooooooooooooooooor_demo'),
     JWT_EXPIRES_IN: zod_1.z.string().default('7d'),
-    FRONTEND_URL: zod_1.z.string().url().default('http://localhost:5173'),
+    FRONTEND_URL: zod_1.z.string().default('http://localhost:5173'),
     BCRYPT_SALT_ROUNDS: zod_1.z.string().default('10'),
 });
 /**

@@ -13,6 +13,11 @@ import logger from '../utils/logger';
  */
 export const connectDB = async (): Promise<void> => {
     try {
+        if (!env.MONGODB_URI) {
+            logger.warn('⚠️  MONGODB_URI is not defined. Running in Offline Mode (Frontend Only).');
+            return;
+        }
+
         const conn = await mongoose.connect(env.MONGODB_URI);
 
         logger.info(`MongoDB Connected: ${conn.connection.host}`);
