@@ -28,12 +28,24 @@ app.use((req, res, next) => {
     next();
 });
 
+// Serve static files from the public directory (frontend build)
+import path from 'path';
+app.use(express.static(path.join(__dirname, '../public')));
+
 // API Routes
 app.use('/api/v1', routes);
 
 // Health check
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Handle SPA routing - return index.html for any unknown route that isn't an API call
+app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+        return next();
+    }
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Error Handlers

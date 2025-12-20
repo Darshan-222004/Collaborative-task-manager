@@ -27,11 +27,21 @@ app.use((req, res, next) => {
     logger_1.default.info(`${req.method} ${req.path}`);
     next();
 });
+// Serve static files from the public directory (frontend build)
+const path_1 = __importDefault(require("path"));
+app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
 // API Routes
 app.use('/api/v1', routes_1.default);
 // Health check
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+// Handle SPA routing - return index.html for any unknown route that isn't an API call
+app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+        return next();
+    }
+    res.sendFile(path_1.default.join(__dirname, '../public/index.html'));
 });
 // Error Handlers
 app.use(error_middleware_1.notFoundHandler);
