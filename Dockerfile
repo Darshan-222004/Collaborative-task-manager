@@ -1,18 +1,16 @@
 # Build stage for frontend
 FROM node:18-alpine as frontend-build
 WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci
-COPY frontend ./
-RUN npm run build
+# Copy pre-built frontend dist from repository
+COPY frontend/dist ./dist
 
 # Build stage for backend
 FROM node:18-alpine as backend-build
 WORKDIR /app/backend
 COPY backend/package*.json ./
-RUN npm ci
-COPY backend ./
-RUN npm run build
+RUN npm ci --only=production
+# Copy pre-built backend dist from repository
+COPY backend/dist ./dist
 
 # Production stage
 FROM node:18-alpine
