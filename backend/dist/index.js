@@ -40,7 +40,7 @@ const startServer = async () => {
         // Initialize custom socket events
         (0, task_socket_1.initializeSocket)(io);
         logger_1.default.info('Socket.io initialized');
-        server.listen(PORT, () => {
+        server.listen(Number(PORT), '0.0.0.0', () => {
             logger_1.default.info(`Server running on port ${PORT}`);
             logger_1.default.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
         });

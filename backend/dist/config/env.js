@@ -23,7 +23,7 @@ const envSchema = zod_1.z.object({
     NODE_ENV: zod_1.z.enum(['development', 'production', 'test']).default('development'),
     PORT: zod_1.z.string().default('5000'),
     MONGODB_URI: zod_1.z.string().optional(),
-    JWT_SECRET: zod_1.z.string().default('fallback_secret_foooooooooooooooooor_demo'),
+    JWT_SECRET: zod_1.z.string().default('fallback_secret_for_demo_only'),
     JWT_EXPIRES_IN: zod_1.z.string().default('7d'),
     FRONTEND_URL: zod_1.z.string().default('http://localhost:5173'),
     BCRYPT_SALT_ROUNDS: zod_1.z.string().default('10'),

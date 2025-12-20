@@ -27,5 +27,4 @@ COPY --from=backend-build /app/backend/node_modules ./backend/node_modules
 COPY --from=frontend-build /app/frontend/dist ./backend/public
 
 WORKDIR /app/backend
-EXPOSE 5000
 CMD ["node", "dist/index.js"]
