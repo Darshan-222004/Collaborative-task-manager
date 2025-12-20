@@ -37,11 +37,17 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 // Handle SPA routing - return index.html for any unknown route that isn't an API call
+const fs = require('fs');
 app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) {
         return next();
     }
-    res.sendFile(path_1.default.join(__dirname, '../public/index.html'));
+    const indexPath = path_1.default.join(__dirname, '../public/index.html');
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.status(200).send('Backend is running! (Frontend build not found in backend/public)');
+    }
 });
 // Error Handlers
 app.use(error_middleware_1.notFoundHandler);
